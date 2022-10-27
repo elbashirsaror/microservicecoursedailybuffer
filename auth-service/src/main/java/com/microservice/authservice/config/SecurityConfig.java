@@ -49,7 +49,6 @@ public class SecurityConfig {
                 .csrf().disable()
                 .cors().and()
                 .authorizeRequests(auth -> {
-                    auth.antMatchers("/order/*","/product/*","/payment/*").hasAnyAuthority("ADMIN", "USER");
                     auth.anyRequest().authenticated();
                 })
                 .formLogin().disable()
@@ -65,7 +64,7 @@ public class SecurityConfig {
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring().antMatchers("/authentication/register","/authentication/login");
+        return (web) -> web.ignoring().antMatchers("/authenticate/signup","/authenticate/login", "/authenticate/refreshtoken");
     }
 
     @Bean
