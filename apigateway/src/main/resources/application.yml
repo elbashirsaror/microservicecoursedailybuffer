@@ -49,15 +49,25 @@ spring:
               args:
                 redis-rate-limiter.replenishRate: 1
                 redis-rate-limiter.burstCapacity: 1
+        - id: AUTH-SERVICE
+          uri: lb://AUTH-SERVICE
+          predicates:
+            - Path=/authenticate/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: AUTH-SERVICE
+                fallbackuri: forward:/productServiceFallBack
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter.replenishRate: 1
+                redis-rate-limiter.burstCapacity: 1
 
 logging:
   level:
     org.springframework: DEBUG
 
-okta:
-  oauth2:
-    issuer: https://dev-54315943.okta.com/oauth2/default
-    audience: api://default
-    client-id: 0oa6txhkrrTb5y8eO5d7
-    client-secret: Ug-n9yD78vj3dLSN2Iu_nJwbaBVmo-BaKy8RXhRs
-    scopes: openid, email, profile, offline_access
+jwt:
+  secret: mySecretKey
+  expireMs: 60000
+  refrEshexpireMs: 120000
